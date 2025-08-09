@@ -15,7 +15,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { BarChart, Home, LogOut, ShieldCheck, Users, Wallet } from "lucide-react"
+import { BarChart, Home, LogOut, ShieldCheck, Users, Wallet, Receipt } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 function isActive(pathname: string, href: string) {
@@ -32,6 +32,7 @@ export function AppSidebar() {
   const items = [
     { title: "Bảng điều khiển", icon: Home, href: "/dashboard" },
     { title: "Người dùng", icon: Users, href: "/users" },
+    { title: "Giao dịch", icon: Receipt, href: "/transactions" },
     { title: "Thanh toán", icon: Wallet, href: "/payments" },
     { title: "Phân tích", icon: BarChart, href: "/analytics" },
     { title: "Hồ sơ", icon: ShieldCheck, href: "/profile" },
@@ -40,7 +41,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <div className="px-2 py-1.5 text-sm font-semibold tracking-tight">JINZMedia Admin</div>
+        <div className="px-2 py-1.5 text-sm font-semibold tracking-tight">AI Automation Admin</div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
