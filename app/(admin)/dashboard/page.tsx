@@ -24,15 +24,39 @@ type DashboardResponse = {
   }
 }
 
+type CompletedTotalResponse = {
+  success: boolean
+  data: {
+    totalAmount: number
+  }
+}
+
 export default function DashboardPage() {
   const [data, setData] = useState<DashboardResponse["data"] | null>(null)
+  const [completedTransactionsRevenue, setCompletedTransactionsRevenue] = useState<number>(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     ;(async () => {
       try {
-        const res = await apiFetch<DashboardResponse>("dashboard/stats", { method: "GET" })
-        setData(res.data)
+        console.log('Making API calls...')
+        console.log('Dashboard stats URL:', '/api/proxy/admin/dashboard/stats')
+        console.log('Completed total URL:', '/api/proxy/admin/transactions-total-completed')
+        
+        const [dashboardRes, completedTotalRes] = await Promise.all([
+          apiFetch<DashboardResponse>("dashboard/stats", { method: "GET" }),
+          apiFetch<CompletedTotalResponse>("transactions-total-completed", { method: "GET" })
+        ])
+        
+        console.log('Dashboard response:', dashboardRes)
+        console.log('Completed total response:', completedTotalRes)
+        
+        setData(dashboardRes.data)
+        setCompletedTransactionsRevenue(completedTotalRes.data.totalAmount)
+        
+        console.log('Set completed transactions revenue to:', completedTotalRes.data.totalAmount)
+      } catch (error) {
+        console.error('Error fetching data:', error)
       } finally {
         setLoading(false)
       }
@@ -50,7 +74,7 @@ export default function DashboardPage() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard title="Tổng giao dịch" value={data?.payments.totalPayments ?? 0} />
-          <StatCard title="Tổng doanh thu" value={formatCurrencyVND(data?.payments.totalRevenue ?? 0)} />
+          <StatCard title="Lợi nhuận (GD hoàn tất)" value={formatCurrencyVND(completedTransactionsRevenue)} />
           <StatCard title="Giao dịch gần đây" value={data?.payments.recentPayments ?? 0} />
           <StatCard title="Doanh thu gần đây" value={formatCurrencyVND(data?.payments.recentRevenue ?? 0)} />
         </div>

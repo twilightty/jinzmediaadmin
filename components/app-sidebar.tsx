@@ -33,7 +33,6 @@ export function AppSidebar() {
     { title: "Bảng điều khiển", icon: Home, href: "/dashboard" },
     { title: "Người dùng", icon: Users, href: "/users" },
     { title: "Giao dịch", icon: Receipt, href: "/transactions" },
-    { title: "Thanh toán", icon: Wallet, href: "/payments" },
     { title: "Phân tích", icon: BarChart, href: "/analytics" },
     { title: "Hồ sơ", icon: ShieldCheck, href: "/profile" },
   ]
