@@ -31,9 +31,17 @@ type CompletedTotalResponse = {
   }
 }
 
+type CurrentMonthCompletedResponse = {
+  success: boolean
+  data: {
+    totalAmount: number
+  }
+}
+
 export default function DashboardPage() {
   const [data, setData] = useState<DashboardResponse["data"] | null>(null)
   const [completedTransactionsRevenue, setCompletedTransactionsRevenue] = useState<number>(0)
+  const [currentMonthCompletedRevenue, setCurrentMonthCompletedRevenue] = useState<number>(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -42,19 +50,24 @@ export default function DashboardPage() {
         console.log('Making API calls...')
         console.log('Dashboard stats URL:', '/api/proxy/admin/dashboard/stats')
         console.log('Completed total URL:', '/api/proxy/admin/transactions-total-completed')
+        console.log('Current month completed URL:', '/api/proxy/admin/transactions-current-month-completed')
         
-        const [dashboardRes, completedTotalRes] = await Promise.all([
+        const [dashboardRes, completedTotalRes, currentMonthRes] = await Promise.all([
           apiFetch<DashboardResponse>("dashboard/stats", { method: "GET" }),
-          apiFetch<CompletedTotalResponse>("transactions-total-completed", { method: "GET" })
+          apiFetch<CompletedTotalResponse>("transactions-total-completed", { method: "GET" }),
+          apiFetch<CurrentMonthCompletedResponse>("transactions-current-month-completed", { method: "GET" })
         ])
         
         console.log('Dashboard response:', dashboardRes)
         console.log('Completed total response:', completedTotalRes)
+        console.log('Current month completed response:', currentMonthRes)
         
         setData(dashboardRes.data)
         setCompletedTransactionsRevenue(completedTotalRes.data.totalAmount)
+        setCurrentMonthCompletedRevenue(currentMonthRes.data.totalAmount)
         
         console.log('Set completed transactions revenue to:', completedTotalRes.data.totalAmount)
+        console.log('Set current month completed revenue to:', currentMonthRes.data.totalAmount)
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
@@ -74,9 +87,9 @@ export default function DashboardPage() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard title="Tổng giao dịch" value={data?.payments.totalPayments ?? 0} />
-          <StatCard title="Lợi nhuận (GD hoàn tất)" value={formatCurrencyVND(completedTransactionsRevenue)} />
+          <StatCard title="Lợi nhuận tháng này" value={formatCurrencyVND(currentMonthCompletedRevenue)} />
           <StatCard title="Giao dịch gần đây" value={data?.payments.recentPayments ?? 0} />
-          <StatCard title="Doanh thu gần đây" value={formatCurrencyVND(data?.payments.recentRevenue ?? 0)} />
+          <StatCard title="Tổng doanh thu" value={formatCurrencyVND(completedTransactionsRevenue)} />
         </div>
 
         <div className="grid gap-4 lg:grid-cols-2">

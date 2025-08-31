@@ -5,6 +5,7 @@ import type React from "react"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -42,7 +43,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   </span>
                 ))}
               </nav>
-              <div className="ml-auto">
+              <div className="ml-auto flex items-center gap-2">
+                <ThemeToggle />
                 <Button asChild variant="outline" className="hidden sm:inline-flex bg-transparent">
                   <a href="https://jinzmedia.com" target="_blank" rel="noreferrer">
                     Mở API
