@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server"
 
-const BASE_URL = "https://atmt.jinzmedia.com"
+const BASE_URL = "https://atmt.jinzmedia.com/api/v1/admin"
 
 async function handle(req: NextRequest, { params }: { params: { path?: string[] } }) {
   const path = (params.path || []).join("/")

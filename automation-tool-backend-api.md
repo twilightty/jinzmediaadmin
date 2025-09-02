@@ -4,7 +4,7 @@ This document describes the backend endpoints required to power the Automation t
 
 Base URL
 ```
-https://jinzmedia.com/api/v1/admin
+https://atmt.jinzmedia.com/api/v1/admin/
 ```
 
 Auth
@@ -213,12 +213,12 @@ GET /jobs?status=failed&export=csv
 Curl
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
-  "https://jinzmedia.com/api/automation/analytics/jobs/stats?startDate=2024-03-01&endDate=2024-03-31"
+  "https://atmt.jinzmedia.com/api/v1/admin/analytics/jobs/stats?startDate=2024-03-01&endDate=2024-03-31"
 ```
 
 JavaScript (fetch)
 ```js
-const res = await fetch("/api/automation/analytics/jobs/stats?period=30", {
+const res = await fetch("/api/proxy/automation/analytics/jobs/stats?period=30", {
   headers: { Authorization: `Bearer ${token}` },
   cache: "no-store"
 })
