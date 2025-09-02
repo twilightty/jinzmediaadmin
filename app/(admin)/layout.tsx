@@ -43,6 +43,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   </span>
                 ))}
               </nav>
+              {/* App Switcher */}
+              <div className="ml-4">
+                <select
+                  className="h-8 rounded-md border bg-background px-2 text-sm text-foreground"
+                  defaultValue="admin"
+                  onChange={(e) => {
+                    const val = e.target.value
+                    if (val === "admin") window.location.href = "/dashboard"
+                    if (val === "automation") window.location.href = "/automation/dashboard"
+                  }}
+                >
+                  <option value="admin">AI Automation Admin</option>
+                  <option value="automation">Automation tool</option>
+                </select>
+              </div>
               <div className="ml-auto flex items-center gap-2">
                 <ThemeToggle />
                 <Button asChild variant="outline" className="hidden sm:inline-flex bg-transparent">
