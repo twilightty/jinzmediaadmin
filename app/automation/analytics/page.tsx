@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { formatCurrencyVND } from "@/lib/format"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -183,9 +184,9 @@ export default function AutomationAnalyticsPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Kpi title="Tổng tiền (kỳ lọc)" value={formatCurrency(costs?.period.totalCost ?? 0)} loading={loading} />
-        <Kpi title="Hạ tầng (kỳ lọc)" value={formatCurrency(costs?.period.infraCost ?? 0)} loading={loading} />
-        <Kpi title="Thực thi (kỳ lọc)" value={formatCurrency(costs?.period.executionCost ?? 0)} loading={loading} />
+        <Kpi title="Tổng tiền (kỳ lọc)" value={formatCurrencyVND(costs?.period.totalCost ?? 0)} loading={loading} />
+        <Kpi title="Hạ tầng (kỳ lọc)" value={formatCurrencyVND(costs?.period.infraCost ?? 0)} loading={loading} />
+        <Kpi title="Thực thi (kỳ lọc)" value={formatCurrencyVND(costs?.period.executionCost ?? 0)} loading={loading} />
       </div>
 
       <Card className="h-[400px]">
@@ -199,7 +200,6 @@ export default function AutomationAnalyticsPage() {
 }
 
 function Kpi({ title, value, loading }: { title: string; value: string | number; loading?: boolean }) {
-  const formatCurrency = (n: number) => n.toLocaleString("vi-VN", { style: "currency", currency: "VND" })
   return (
     <Card>
       <CardHeader className="pb-2">
