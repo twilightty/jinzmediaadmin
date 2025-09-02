@@ -108,12 +108,12 @@ Response
   "success": true,
   "data": {
     "overall": {
-      "totalCost": 12500000,
-      "infraCost": 7000000,
-      "executionCost": 5500000
+      "totalCost": 12500000,        // Tổng tiền tất cả thời gian
+      "infraCost": 7000000,         // Chi phí hạ tầng
+      "executionCost": 5500000      // Chi phí thực thi
     },
     "period": {
-      "totalCost": 3200000,
+      "totalCost": 3200000,         // Tổng tiền theo kỳ lọc
       "infraCost": 1800000,
       "executionCost": 1400000
     },

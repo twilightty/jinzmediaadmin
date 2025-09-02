@@ -30,12 +30,22 @@ type JobsStats = {
   }
 }
 
+type CostsStats = {
+  success: boolean
+  data: {
+    overall: { totalCost: number; infraCost: number; executionCost: number }
+    period: { totalCost: number; infraCost: number; executionCost: number }
+    dailyCosts: { _id: string; amount: number }[]
+  }
+}
+
 export default function AutomationAnalyticsPage() {
   const [period, setPeriod] = useState("current-month")
   const [customStartDate, setCustomStartDate] = useState("")
   const [customEndDate, setCustomEndDate] = useState("")
   const [chartType, setChartType] = useState<"line" | "area" | "bar">("line")
   const [data, setData] = useState<JobsStats["data"] | null>(null)
+  const [costs, setCosts] = useState<CostsStats["data"] | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -51,10 +61,16 @@ export default function AutomationAnalyticsPage() {
         const e = new Date(now.getFullYear(), now.getMonth() + 1, 0)
         qp = `startDate=${format(s, "yyyy-MM-dd")}&endDate=${format(e, "yyyy-MM-dd")}`
       } else qp = `period=${period}`
-      const res = await fetch(`/api/proxy/automation/analytics/jobs/stats?${qp}`, { cache: "no-store" })
-      const json: JobsStats = await res.json()
-      if (!res.ok || !json?.success) throw new Error(json?.["message"] || `Request failed (${res.status})`)
-      setData(json.data)
+      const [jobsRes, costsRes] = await Promise.all([
+        fetch(`/api/proxy/automation/analytics/jobs/stats?${qp}`, { cache: "no-store" }),
+        fetch(`/api/proxy/automation/analytics/costs/stats?${qp}`, { cache: "no-store" }),
+      ])
+      const jobsJson: JobsStats = await jobsRes.json()
+      const costsJson: CostsStats = await costsRes.json()
+      if (!jobsRes.ok || !jobsJson?.success) throw new Error(jobsJson?.["message"] || `Jobs request failed (${jobsRes.status})`)
+      if (!costsRes.ok || !costsJson?.success) throw new Error(costsJson?.["message"] || `Costs request failed (${costsRes.status})`)
+      setData(jobsJson.data)
+      setCosts(costsJson.data)
     }
     run().catch((e: any) => setError(e?.message || "Không thể tải dữ liệu")).finally(() => setLoading(false))
   }, [period, customStartDate, customEndDate])
@@ -166,6 +182,12 @@ export default function AutomationAnalyticsPage() {
         <Kpi title="Thất bại (kỳ lọc)" value={data?.period.failedJobs ?? 0} loading={loading} />
       </div>
 
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Kpi title="Tổng tiền (kỳ lọc)" value={formatCurrency(costs?.period.totalCost ?? 0)} loading={loading} />
+        <Kpi title="Hạ tầng (kỳ lọc)" value={formatCurrency(costs?.period.infraCost ?? 0)} loading={loading} />
+        <Kpi title="Thực thi (kỳ lọc)" value={formatCurrency(costs?.period.executionCost ?? 0)} loading={loading} />
+      </div>
+
       <Card className="h-[400px]">
         <CardHeader>
           <CardTitle>Job theo ngày</CardTitle>
@@ -177,6 +199,7 @@ export default function AutomationAnalyticsPage() {
 }
 
 function Kpi({ title, value, loading }: { title: string; value: string | number; loading?: boolean }) {
+  const formatCurrency = (n: number) => n.toLocaleString("vi-VN", { style: "currency", currency: "VND" })
   return (
     <Card>
       <CardHeader className="pb-2">
